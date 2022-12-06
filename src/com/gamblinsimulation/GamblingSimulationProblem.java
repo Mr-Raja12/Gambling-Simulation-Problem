@@ -1,79 +1,113 @@
-package com.gamblinsimulation;
-import java.util.Random;
-/**
- * @author Raja 
- * This program is to display the Welcome message to Gambling Simulation Program.
- * Use Case 1 is that As a Gambler, would start with a stake of $100 every day and bet $1
- *  every game.
- *  As a calculative Gambler if won or lost 50% of the stake, would resign for the day.
- */
-public class GamblingSimulationProblem {
-    /**
-     * Default construction
-     */
-    public GamblingSimulationProblem() {
-        System.out.println("Welcome to Gambling Simulation Program");
-        System.out.println();
-        System.out.println("Gambler starts the game...");
-    }
+ package com.gamblinsimulation;
+ import java.util.Random;
+   /**
+   * @author Raja 
+   * This program is to display the Welcome message to Gambling Simulation Program.
+   * Use Case 1 is that As a Gambler, would start with a stake of $100 every day and bet $1
+   *  every game.
+   *  As a calculative Gambler if won or lost 50% of the stake, would resign for the day.
+   *  After 20 days of playing every day would like to know the total amount won or lost.
+   */
+ public class GamblingSimulationProblem {
 
-    /**
-     * Declaring constants
-     */
-    final int betMoney = 1;
-    final int stakePerDay = 100;
-    final double percentage = 0.5;   //as it is given 50%
+	    /**
+	     * Default Constructor
+	     */
+	    public GamblingSimulationProblem() {
+	        System.out.println("Welcome to Gambling Simulation Program");
+	        System.out.println();
+	        System.out.println("Gambler starts the game...");
+	    }
 
-    public static void main(String[] args) {
+	    /**
+	     * Declaring constants
+	     */
+	    private final static int betMoney = 1;
+	    private final static int stakePerDay = 100;
+	    private final static double percentage = 0.5;   //as it is given 50%
+	    private final static int maxDays = 20;
+	    public static void main(String[] args) {
 
-        /**
-         * Initialize the object.
-         */
-        GamblingSimulationProblem gambling = new GamblingSimulationProblem();
-        System.out.println();
-        System.out.println("Initial stake of Gambler is : "+gambling.stakePerDay);
-        System.out.println("Initial betting money in gambling is : "+gambling.betMoney);
-        startsGambling(gambling);
+	        /**
+	         * Initialize the object.
+	         */
+	        GamblingSimulationProblem gambling = new GamblingSimulationProblem();
+	        System.out.println();
+	        System.out.println("Initial stake of Gambler is : "+stakePerDay);
+	        System.out.println("Initial betting money in gambling is : "+betMoney);
+	        System.out.println();
+	        startsGambling(gambling);
 
-    }
+	    }
+	    /**
+	     * Method for starting the game.
+	     * @param gambling
+	     */
+	    public static void startsGambling(GamblingSimulationProblem gambling) {
+	        //Declaring variables
+	        Random random = new Random();
+	        int highestStake = (int) (stakePerDay + (stakePerDay * percentage));
+	        int lowestStake = (int) (stakePerDay - (stakePerDay * percentage));
 
-     /**
-      * Method for starting the game.
-      * @param gambling
-      */
-    public static void startsGambling(GamblingSimulationProblem gambling) {
-        //Declaring variables
-        Random random = new Random();
-        int totalStake = 0;
-        totalStake = totalStake + gambling.stakePerDay;
-        System.out.println(gambling.percentage);
-        int highestStake = (int) (totalStake+(totalStake * gambling.percentage));
-        int lowestStake = (int) (totalStake-(totalStake * gambling.percentage));
-
-        /**
-         * Checking randomly if win or loose with the condition.
-         */
-        totalStake = checkingCondition(gambling,random,totalStake,highestStake,lowestStake);
-        System.out.println("Gambler resigns for the day.");
-        System.out.println("Amount remaining at Gambler is : "+totalStake);
-
-    }
-
-    public static int checkingCondition(GamblingSimulationProblem gambling, Random random, int totalStake, int highestStake, int lowestStake) {
-        while (totalStake != highestStake && totalStake != lowestStake)
-        {
-            int bet = random.nextInt(2);
-            switch (bet) {
-                case 1:
-                    System.out.println("Gambler won the bet.");
-                    totalStake = totalStake + gambling.betMoney;
-                    break;
-                default:
-                    System.out.println("Gambler lost the bet.");
-                    totalStake = totalStake - gambling.betMoney;
-                    break;
-            }
-        }
-        return totalStake;
-    }
+	        /**
+	         * Checking randomly if win or loose with the condition for 20 days
+	         */
+	        checkingCondition(highestStake,lowestStake,random);
+	    }
+	    public static void checkingCondition(int highestStake, int lowestStake, Random random) {
+	        int totalWon = 0,totalLost = 0,totalDollars = 0,maxProfit = 0,maxLoss = 0,maxCount;
+	        for (int i = 1; i <= maxDays; i++) {
+	            int totalStake = stakePerDay;
+	            while (totalStake != highestStake && totalStake != lowestStake) {
+	                int bet = random.nextInt(2);
+	                switch (bet) {
+	                    case 1:
+	                        //Gambler Won
+	                        totalStake = totalStake + betMoney;
+	                        totalDollars = highestStake - stakePerDay;
+	                        maxProfit++;
+	                        break;
+	                    default:
+	                        //Gambler Lost
+	                        totalStake = totalStake - betMoney;
+	                        totalDollars = stakePerDay - lowestStake;
+	                        maxLoss++;
+	                        break;
+	                }
+	            }
+	            System.out.println("Gambler resigns for the day " + i);
+	            System.out.println("Amount remaining at Gambler is : " + totalStake);
+	            System.out.println("Amount won count by Gambler : "+maxProfit+" for day "+i);
+	            System.out.println("Amount lost count by Gambler : "+maxLoss+" for day "+i);
+	            if (totalStake == highestStake)
+	            {
+	                maxCount = maxProfit - maxLoss;
+	                System.out.println("Gambler having highest won count : "+maxCount+" for the day "+i);
+	                System.out.println("Gambler won by $" +totalDollars+" for the day "+i);
+	                totalWon = totalWon + totalDollars;
+	            }
+	            else if (totalStake == lowestStake)
+	            {
+	                maxCount = maxLoss - maxProfit;
+	                System.out.println("Gambler having highest lost count : "+maxCount+" for the day "+i);
+	                System.out.println("Gambler lost by $" +totalDollars+" for the day "+i);
+	                totalLost = totalLost + totalDollars;
+	            }
+	            System.out.println();
+	        }
+	        if(totalWon > totalLost)
+	        {
+	            int total = totalWon - totalLost;
+	            System.out.println("Gambler having overall total won $"+total+" in this 20 days");
+	        }
+	        else if (totalLost > totalWon)
+	        {
+	            int total = totalLost - totalWon;
+	            System.out.println("Gambler having overall total lost $"+total+" in this 20 days");
+	        }
+	        else if (totalWon == totalLost)
+	        {
+	            System.out.println("Gambler neither having total won or total lost in this 20 days");
+	        }
+	   }
 }
